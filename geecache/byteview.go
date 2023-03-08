@@ -11,6 +11,7 @@ func (v ByteView) Len() int {
 }
 
 // ByteView returns a copy of the data as a byte slice
+// to prevent against modifying
 func (v ByteView) ByteSlice() []byte {
 	return cloneBytes(v.b)
 }
@@ -18,5 +19,11 @@ func (v ByteView) ByteSlice() []byte {
 // String returns the data as a string
 func (v ByteView) String() string {
 	return string(v.b)
+}
+
+func cloneBytes(b []byte) []byte {
+	c := make([]byte, len(b))
+	copy(c, b)
+	return c
 }
 
