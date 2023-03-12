@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"geeorm"
-	// "geeorm/log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
