@@ -2,25 +2,37 @@ package session
 
 import (
 	"database/sql"
+	"geeorm/dialect"
 	"geeorm/log"
+	"geeorm/schema"
 	"strings"
 )
 
+// Session keep a pointer to sql.DB and provides all
+// execution of all kind of database operations
 type Session struct {
-	db		*sql.DB
-	sql		strings.Builder
-	sqlVars	[]interface{}
+	db			*sql.DB
+	dialect		dialect.Dialect
+	refTable	*schema.Schema
+	sql			strings.Builder
+	sqlVars		[]interface{}
 }
 
-func New(db *sql.DB) *Session {
-	return &Session{db: db}
+// New create a instance of Session
+func New(db *sql.DB, dialect dialect.Dialect) *Session {
+	return &Session{
+		db: db,
+		dialect: dialect,
+	}
 }
 
+//Clear initialize the state of a session
 func (s *Session) Clear() {
 	s.sql.Reset()
 	s.sqlVars = nil
 }
 
+// DB returns *sql.DB
 func (s *Session) DB() *sql.DB {
 	return s.db
 }
