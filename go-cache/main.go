@@ -14,7 +14,7 @@ var db = map[string]string {
 	"Sam": "567",
 }
 
-var GRPC = false
+var GRPC = true
 
 func createGroup() *geecache.Group {
 	return geecache.NewGroup("score", 2<<10, geecache.GetterFunc(

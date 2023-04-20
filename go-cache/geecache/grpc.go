@@ -13,12 +13,13 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+// Client
 type grpcGetter struct {
 	addr string
 }
 
 func (g *grpcGetter) Get(in *pb.Request, out *pb.Response) error {
-	conn, err := grpc.Dial(g.addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(g.addr[7:], grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
