@@ -140,7 +140,7 @@ func (h *httpGetter) Get(in *pb.Request, out *pb.Response) error {
 	return nil
 }
 
-var _PeerGetter = (*httpGetter)(nil)
+var _ PeerGetter = (*httpGetter)(nil)
 
 // Set updates the pool's list of peers.
 func (p *HTTPPool) Set(peers ...string) {
