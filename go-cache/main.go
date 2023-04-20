@@ -14,6 +14,8 @@ var db = map[string]string {
 	"Sam": "567",
 }
 
+var GRPC = false
+
 func createGroup() *geecache.Group {
 	return geecache.NewGroup("score", 2<<10, geecache.GetterFunc(
 		func(key string) ([]byte, error) {
@@ -25,12 +27,22 @@ func createGroup() *geecache.Group {
 		}))
 }
 
+// Start cache server on HTTP
 func startCacheServer(addr string, addrs []string, gee *geecache.Group) {
 	peers := geecache.NewHTTPPool(addr)
 	peers.Set(addrs...)
 	gee.RegisterPeers(peers)
 	log.Println("geecache is running at", addr)
 	log.Fatal(http.ListenAndServe(addr[7:], peers))
+}
+
+// Start cache server on GRPC
+func startCacheServerGRPC(addr string, addrs []string, gee *geecache.Group) {
+	peers := geecache.NewGrpcPool(addr)
+	peers.Set(addrs...)
+	gee.RegisterPeers(peers)
+	log.Println("geecache is running at", addr)
+	peers.Run()
 }
 
 func startAPIServer(apiAddr string, gee *geecache.Group) {
@@ -53,7 +65,7 @@ func main() {
 	var port int
 	var api bool
 	flag.IntVar(&port, "port", 8001, "Geecache server port")
-	flag.BoolVar(&api, "api", false, "Start a api server")
+	flag.BoolVar(&api, "api", false, "Start a api server?")
 	flag.Parse()
 
 	apiAddr := "http://localhost:9999"
@@ -72,5 +84,9 @@ func main() {
 	if api {
 		go startAPIServer(apiAddr, gee)
 	}
-	startCacheServer(addrMap[port], []string(addrs), gee)
+	if GRPC {
+		startCacheServerGRPC(addrMap[port], addrs, gee)
+	} else {
+		startCacheServer(addrMap[port], addrs, gee)
+	}
 }
