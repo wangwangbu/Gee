@@ -90,7 +90,7 @@ func (g *Group) load(key string) (value ByteView, err error) {
 	// regardless of the number of concurrent callers.
 	view, err := g.loader.Do(key, func() (interface{}, error) {
 		if g.peers != nil {
-			if peer, ok := g.peers.PickPeer(key); ok {
+			if peer, ok := g.peers.PickPeer(key); ok {	// if current peer is the required peer, ok is false
 				if value, err = g.getFromPeer(peer, key); err == nil {
 					return value, nil
 				}
